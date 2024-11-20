@@ -1,18 +1,25 @@
-use std::io::{stdin,stdout,Write};
+extern crate colored;
 
-fn listen() {
+use std::io::{stdin,stdout,Write};
+use colored::*;
+
+fn listen(prompt: &ColoredString) {
     let mut message=String::new();
     let _=stdout().flush();
-    stdin().read_line(&mut message).expect("Speak, the Void is listening.");
+    stdin().read_line(&mut message).expect(prompt);
+
     if message == String::from("thank you, goodbye\n") {
-        println!("The Void hears you. Be at peace.");
+        let goodbye_msg = String::from("The Void hears you. Be at peace.");
+        println!("{}", goodbye_msg.purple());
         return;
     }
-    println!("mmHmm...");
-    listen();
+    let mm_hmm = String::from("mmHmm...");
+    println!("{}", mm_hmm.purple());
+    listen(prompt);
 }
 
 fn main() {
-    println!("Speak, the Void is listening...");
-    listen();
+    let prompt = String::from("Speak, the Void is listening...");
+    println!("{}", prompt.purple());
+    listen(&prompt.purple());
 }
