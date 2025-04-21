@@ -9,4 +9,4 @@ Install Rust and `cargo`.
 
 Type what you want to say and press enter. The screen is cleared for your next line.
 
-`Ctrl+C` then enter to exit.
+`Ctrl+C` to exit.

@@ -1,18 +1,19 @@
 extern crate colored;
+extern crate exitcode;
 
 use colored::*;
 use ctrlc;
 use std::io::{stdin, stdout, Write};
+use std::process::exit;
 use std::process::Command;
+use std::sync::atomic::{AtomicBool, Ordering::SeqCst};
 use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
 
-fn exit(r: &Arc<AtomicBool>) {
-  clearscreen();
-  let goodbye_msg = String::from("Be at peace. (Press enter to exit)");
-  println!("{}", goodbye_msg.purple());
-  r.store(false, Ordering::SeqCst);
-  return;
+fn goodbye() {
+    clearscreen();
+    let goodbye_msg = String::from("The Void hears. Be at peace.");
+    println!("{}", goodbye_msg.purple());
+    exit(exitcode::OK);
 }
 
 fn clearscreen() {
@@ -25,18 +26,17 @@ fn clearscreen() {
 
 fn main() {
     let running = Arc::new(AtomicBool::new(true));
-    let r = running.clone();
 
-    ctrlc::set_handler(move || exit(&r)).expect("Error setting ctrlc handler");
+    ctrlc::set_handler(move || goodbye()).expect("Error setting ctrlc handler");
 
+    clearscreen();
     let prompt = String::from("Hello! What's troublin' yer noggin'?");
     println!("{}", prompt.purple());
 
-    while running.load(Ordering::SeqCst) {
-      let mut message = String::new();
-      let _ = stdout().flush();
-      stdin().read_line(&mut message).expect(&prompt);
-      clearscreen();
+    while running.load(SeqCst) {
+        let mut message = String::new();
+        let _ = stdout().flush();
+        stdin().read_line(&mut message).expect(&prompt);
+        clearscreen();
     }
-    return;
 }
